@@ -1,0 +1,2158 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Cosmic Tapper Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --critical: #ffd700;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            
+            --bronze: #cd7f32;
+            --silver: #c0c0c0;
+            --gold: #ffd700;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a2e;
+            color: var(--light);
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(108, 92, 231, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(253, 121, 168, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+            overscroll-behavior-y: contain;
+            -webkit-overflow-scrolling: touch;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+        }
+        
+        .stats-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            color: var(--light);
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .stats-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .score-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .score-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                rgba(108, 92, 231, 0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 6s infinite linear;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        .score {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(108, 92, 231, 0.5);
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .league-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .league-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .league-icon.bronze {
+            background: linear-gradient(135deg, var(--bronze), #a66b28);
+            box-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+        }
+        
+        .league-icon.silver {
+            background: linear-gradient(135deg, var(--silver), #a8a8a8);
+            box-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+        }
+        
+        .league-icon.gold {
+            background: linear-gradient(135deg, var(--gold), #e6c200);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+        
+        .league-info {
+            flex: 1;
+        }
+        
+        .league-name {
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+        
+        .league-progress {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 3px;
+        }
+        
+        .league-progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            transition: width 0.5s;
+        }
+        
+        .league-progress-text {
+            font-size: 11px;
+            opacity: 0.7;
+            text-align: right;
+        }
+        
+        .clicker-container {
+            position: relative;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .clicker {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 
+                0 10px 20px rgba(108, 92, 231, 0.3),
+                0 0 0 10px rgba(255, 255, 255, 0.05),
+                0 0 0 15px rgba(108, 92, 231, 0.1);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        .clicker:active {
+            transform: scale(0.95);
+            box-shadow: 
+                0 5px 10px rgba(108, 92, 231, 0.3),
+                0 0 0 8px rgba(255, 255, 255, 0.05),
+                0 0 0 12px rgba(108, 92, 231, 0.1);
+        }
+
+        .clicker::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                transparent 0%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 6s infinite linear;
+            z-index: -1;
+        }
+
+        .clicker:hover {
+            transform: scale(1.03);
+            box-shadow: 
+                0 15px 30px rgba(108, 92, 231, 0.4),
+                0 0 0 10px rgba(255, 255, 255, 0.1),
+                0 0 0 15px rgba(108, 92, 231, 0.2);
+        }
+
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 
+                    0 10px 20px rgba(108, 92, 231, 0.3),
+                    0 0 0 10px rgba(255, 255, 255, 0.05),
+                    0 0 0 15px rgba(108, 92, 231, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    0 10px 30px rgba(108, 92, 231, 0.5),
+                    0 0 0 10px rgba(255, 255, 255, 0.1),
+                    0 0 0 15px rgba(108, 92, 231, 0.3);
+            }
+        }
+        
+        .clicker.bronze-effect {
+            background: linear-gradient(135deg, var(--bronze), #a66b28);
+            animation: pulse-glow-bronze 2s infinite alternate;
+        }
+        
+        .clicker.silver-effect {
+            background: linear-gradient(135deg, var(--silver), #a8a8a8);
+            animation: pulse-glow-silver 2s infinite alternate;
+        }
+        
+        .clicker.gold-effect {
+            background: linear-gradient(135deg, var(--gold), #e6c200);
+            animation: pulse-glow-gold 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow-bronze {
+            0% {
+                box-shadow: 
+                    0 10px 20px rgba(205, 127, 50, 0.3),
+                    0 0 0 10px rgba(255, 255, 255, 0.05),
+                    0 0 0 15px rgba(205, 127, 50, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    0 10px 30px rgba(205, 127, 50, 0.5),
+                    0 0 0 10px rgba(255, 255, 255, 0.1),
+                    0 0 0 15px rgba(205, 127, 50, 0.3);
+            }
+        }
+
+        @keyframes pulse-glow-silver {
+            0% {
+                box-shadow: 
+                    0 10px 20px rgba(192, 192, 192, 0.3),
+                    0 0 0 10px rgba(255, 255, 255, 0.05),
+                    0 0 0 15px rgba(192, 192, 192, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    0 10px 30px rgba(192, 192, 192, 0.5),
+                    0 0 0 10px rgba(255, 255, 255, 0.1),
+                    0 0 0 15px rgba(192, 192, 192, 0.3);
+            }
+        }
+
+        @keyframes pulse-glow-gold {
+            0% {
+                box-shadow: 
+                    0 10px 20px rgba(255, 215, 0, 0.3),
+                    0 0 0 10px rgba(255, 255, 255, 0.05),
+                    0 0 0 15px rgba(255, 215, 0, 0.1);
+            }
+            100% {
+                box-shadow: 
+                    0 10px 30px rgba(255, 215, 0, 0.5),
+                    0 0 0 10px rgba(255, 255, 255, 0.1),
+                    0 0 0 15px rgba(255, 215, 0, 0.3);
+            }
+        }
+        
+        .clicker-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+            opacity: 0;
+            transform: scale(0);
+            pointer-events: none;
+        }
+        
+        .clicker-effect.critical {
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, transparent 70%);
+        }
+        
+        .clicker-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            opacity: 0;
+        }
+        
+        .particle.critical {
+            background-color: var(--critical);
+            width: 10px;
+            height: 10px;
+        }
+        
+        .particle.bronze {
+            background-color: var(--bronze);
+        }
+        
+        .particle.silver {
+            background-color: var(--silver);
+        }
+        
+        .particle.gold {
+            background-color: var(--gold);
+        }
+        
+        .daily-rewards-container {
+            background: rgba(30, 30, 58, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(108, 92, 231, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .daily-rewards-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+
+        .daily-rewards-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .daily-rewards-title i {
+            font-size: 20px;
+        }
+
+        .rewards-grid {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 5px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) transparent;
+        }
+
+        .rewards-grid::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .rewards-grid::-webkit-scrollbar-thumb {
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        .reward {
+            min-width: 70px;
+            padding: 10px;
+            background: rgba(40, 40, 80, 0.6);
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            border: 1px solid rgba(108, 92, 231, 0.2);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .reward.claimed {
+            background: rgba(0, 184, 148, 0.1);
+            border-color: rgba(0, 184, 148, 0.3);
+            opacity: 0.7;
+        }
+
+        .reward.available {
+            background: rgba(108, 92, 231, 0.15);
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(108, 92, 231, 0.3);
+            cursor: pointer;
+            transform: translateY(-2px);
+        }
+
+        .reward.available:hover {
+            background: rgba(108, 92, 231, 0.25);
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.4);
+        }
+
+        .reward-day {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--light);
+        }
+
+        .reward-amount {
+            color: var(--warning);
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .reward-checkmark {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: var(--success);
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .reward.claimed .reward-checkmark {
+            opacity: 1;
+        }
+
+        .reward-next {
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .reward.available .reward-next {
+            opacity: 1;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes reward-claim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .reward-claim-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+            border-radius: 10px;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .upgrades-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 5px;
+            height: 20px;
+            background: linear-gradient(to bottom, var(--accent), var(--primary));
+            border-radius: 5px;
+        }
+        
+        .upgrades-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .upgrade {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upgrade::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .upgrade:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-3px);
+        }
+        
+        .upgrade-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .upgrade-icon {
+            font-size: 18px;
+        }
+        
+        .upgrade-description {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 10px;
+            min-height: 36px;
+        }
+        
+        .upgrade-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .upgrade-cost {
+            color: var(--warning);
+            font-weight: 500;
+        }
+        
+        .upgrade-level {
+            color: var(--success);
+        }
+        
+        .buy-btn {
+            width: 100%;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        .buy-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+        }
+        
+        .buy-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4);
+        }
+        
+        .floating-points {
+            position: absolute;
+            font-weight: bold;
+            pointer-events: none;
+            animation: float-up 1s forwards;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 18px;
+            z-index: 10;
+        }
+        
+        .floating-points.critical {
+            color: var(--critical);
+            font-size: 22px;
+            animation: float-up-critical 1s forwards;
+        }
+        
+        @keyframes float-up {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes float-up-critical {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(-25px) scale(1.2);
+            }
+            100% {
+                transform: translateY(-50px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .stats-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .stats-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: #1e1e3a;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-label {
+            opacity: 0.8;
+        }
+        
+        .stat-value {
+            font-weight: 500;
+        }
+        
+        .save-reset-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .save-btn {
+            background: var(--success);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .achievements-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .achievement {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .achievement.locked {
+            opacity: 0.6;
+        }
+        
+        .achievement.locked.upgrade-achievement {
+            cursor: pointer;
+            background: rgba(108, 92, 231, 0.1);
+        }
+        
+        .achievement.locked.upgrade-achievement:hover {
+            background: rgba(108, 92, 231, 0.2);
+        }
+        
+        .achievement-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            color: var(--warning);
+        }
+        
+        .achievement-info {
+            flex: 1;
+        }
+        
+        .achievement-name {
+            font-weight: 500;
+        }
+        
+        .achievement-desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        
+        .achievement-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .achievement-progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .achievement-cost {
+            font-size: 10px;
+            margin-top: 3px;
+            text-align: right;
+            color: var(--warning);
+        }
+        
+        @media (max-width: 400px) {
+            .upgrades-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .clicker {
+                width: 150px;
+                height: 150px;
+            }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(253, 121, 168, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(253, 121, 168, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(253, 121, 168, 0); }
+        }
+        
+        .new-upgrade {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(30, 30, 58, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 5px;
+            z-index: 100;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 12px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            transition: all 0.3s;
+            min-width: 70px;
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        .nav-item i {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nav-item.active {
+            color: var(--accent);
+            background: rgba(108, 92, 231, 0.2);
+            transform: translateY(-8px);
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+            transform: scale(1.1);
+        }
+
+        .nav-item:not(.active):hover {
+            color: var(--light);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 350px) {
+            .nav-item {
+                font-size: 11px;
+                padding: 6px 8px;
+                min-width: 60px;
+            }
+            
+            .nav-item i {
+                font-size: 22px;
+            }
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .max-level-badge {
+            font-size: 10px;
+            text-align: center;
+            margin-top: 5px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        @keyframes league-promotion {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); box-shadow: 0 0 20px currentColor; }
+            100% { transform: scale(1); }
+        }
+        
+        .league-promotion {
+            animation: league-promotion 1.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page active" id="home-page">
+            <header>
+                <h1>Cosmic Tapper Pro</h1>
+                <button class="stats-btn" id="stats-btn">📊</button>
+            </header>
+            
+            <div class="score-container">
+                <div class="score">🪙 <span id="points">0</span></div>
+                <div class="stats-row">
+                    <span>💎 <span id="ppt">1</span>/tap</span>
+                    <span>⚡ <span id="pps">0</span>/sec</span>
+                    <span>✨ <span id="critical-chance">10</span>%</span>
+                </div>
+            </div>
+            
+            <div class="league-container" id="league-container">
+                <div class="league-icon bronze" id="league-icon">🥉</div>
+                <div class="league-info">
+                    <div class="league-name" id="league-name">Bronze League</div>
+                    <div class="league-progress">
+                        <div class="league-progress-bar" id="league-progress-bar"></div>
+                    </div>
+                    <div class="league-progress-text" id="league-progress-text">0/1,000 to Silver</div>
+                </div>
+            </div>
+            
+            <div class="clicker-container">
+                <div class="clicker" id="clicker">
+                    <div class="clicker-particles" id="clicker-particles"></div>
+                    Tap!
+                </div>
+            </div>
+
+            <div class="daily-rewards-container">
+                <div class="daily-rewards-title">
+                    <i>🎁</i>
+                    <span>Daily Rewards</span>
+                </div>
+                <div class="rewards-grid" id="rewards-grid"></div>
+            </div>
+        </div>
+        
+        <div class="page" id="upgrades-page">
+            <header>
+                <h1>Upgrades</h1>
+                <button class="stats-btn" id="stats-btn-upgrades">📊</button>
+            </header>
+            
+            <div class="upgrades-container">
+                <h2 class="section-title">Upgrades</h2>
+                <div class="upgrades-grid" id="upgrades-grid">
+                </div>
+            </div>
+        </div>
+        
+        <div class="page" id="achievements-page">
+            <header>
+                <h1>Achievements</h1>
+                <button class="stats-btn" id="stats-btn-achievements">📊</button>
+            </header>
+            
+            <div class="achievements-container">
+                <h2 class="section-title">Achievements</h2>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+    </div>
+    
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="home-page">
+            <i>🏠</i>
+            <span>Home</span>
+        </a>
+        <a href="#" class="nav-item" data-page="upgrades-page">
+            <i>⚡</i>
+            <span>Upgrades</span>
+        </a>
+        <a href="#" class="nav-item" data-page="achievements-page">
+            <i>🏆</i>
+            <span>Achievements</span>
+        </a>
+    </nav>
+    
+    <div class="stats-modal" id="stats-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">×</button>
+            <h2 class="modal-title">Game Statistics</h2>
+            
+            <div class="stat-item">
+                <span class="stat-label">Total Points:</span>
+                <span class="stat-value" id="stat-total-points">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Total Taps:</span>
+                <span class="stat-value" id="stat-total-taps">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Points Per Tap:</span>
+                <span class="stat-value" id="stat-ppt">1</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Points Per Second:</span>
+                <span class="stat-value" id="stat-pps">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Critical Hits:</span>
+                <span class="stat-value" id="stat-critical-hits">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Critical Chance:</span>
+                <span class="stat-value" id="stat-critical-chance">10%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Play Time:</span>
+                <span class="stat-value" id="stat-play-time">0s</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Current League:</span>
+                <span class="stat-value" id="stat-league">Bronze</span>
+            </div>
+            
+            <div class="save-reset-btns">
+                <button class="modal-btn save-btn" id="save-btn">Save Game</button>
+                <button class="modal-btn reset-btn" id="reset-btn">Reset Game</button>
+            </div>
+        </div>
+    </div>
+    
+    <audio id="click-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3" preload="auto"></audio>
+    <audio id="critical-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" preload="auto"></audio>
+    <audio id="upgrade-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" preload="auto"></audio>
+    <audio id="achievement-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+    <audio id="league-sound" src="https://assets.mixkit.co/sfx/preview/mixkit-achievement-bell-600.mp3" preload="auto"></audio>
+    
+    <script>
+        const game = {
+            points: 0,
+            pointsPerTap: 1,
+            pointsPerSecond: 0,
+            criticalChance: 10,
+            criticalMultiplier: 3,
+            totalTaps: 0,
+            totalPointsEarned: 0,
+            criticalHits: 0,
+            playTime: 0,
+            lastUpdate: Date.now(),
+            soundEnabled: true,
+            dailyRewards: [1000, 5000, 8000, 12000, 20000, 35000, 50000],
+            lastRewardClaimDate: null,
+            currentRewardDay: 0,
+            league: 0, 
+            leagues: [
+                { name: "Bronze League", icon: "🥉", threshold: 1000, particleColor: "bronze", clickerEffect: "bronze-effect" },
+                { name: "Silver League", icon: "🥈", threshold: 10000, particleColor: "silver", clickerEffect: "silver-effect" },
+                { name: "Gold League", icon: "🥇", threshold: 50000, particleColor: "gold", clickerEffect: "gold-effect" }
+            ],
+            upgrades: [
+                {
+                    id: 1,
+                    name: "Energy Boost",
+                    icon: "⚡",
+                    description: "Increase points per tap",
+                    baseCost: 1000,
+                    cost: 1000,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 1,
+                    type: "click"
+                },
+                {
+                    id: 2,
+                    name: "Power Glove",
+                    icon: "👊",
+                    description: "Even more points per tap",
+                    baseCost: 1500,
+                    cost: 1500,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 5,
+                    type: "click"
+                },
+                {
+                    id: 3,
+                    name: "Quantum Tapper",
+                    icon: "🌀",
+                    description: "Advanced tapping technology",
+                    baseCost: 2000,
+                    cost: 2000,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 10,
+                    type: "click"
+                },
+                {
+                    id: 4,
+                    name: "Galactic Miner",
+                    icon: "⛏️",
+                    description: "Mine cosmic resources",
+                    baseCost: 2500,
+                    cost: 2500,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 15,
+                    type: "click"
+                },
+                {
+                    id: 5,
+                    name: "Drone Fleet",
+                    icon: "🚁",
+                    description: "A fleet of collecting drones",
+                    baseCost: 1200,
+                    cost: 1200,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 2,
+                    type: "auto"
+                },
+                {
+                    id: 6,
+                    name: "Time Warper",
+                    icon: "⏳",
+                    description: "Bend time to your will",
+                    baseCost: 5000,
+                    cost: 5000,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 10,
+                    type: "auto"
+                },
+                {
+                    id: 7,
+                    name: "Critical Expert",
+                    icon: "✨",
+                    description: "Increase critical hit chance",
+                    baseCost: 1800,
+                    cost: 1800,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 2,
+                    type: "critical"
+                },
+                {
+                    id: 8,
+                    name: "Lucky Strikes",
+                    icon: "🍀",
+                    description: "Critical hits do more damage",
+                    baseCost: 2200,
+                    cost: 2200,
+                    level: 0,
+                    maxLevel: 20,
+                    multiplier: 0.5,
+                    type: "critical"
+                }
+            ],
+            achievements: [
+                {
+                    id: 1,
+                    name: "First Steps",
+                    icon: "👣",
+                    description: "Reach 100 points",
+                    target: 100,
+                    achieved: false,
+                    reward: 10
+                },
+                {
+                    id: 2,
+                    name: "Tapping Pro",
+                    icon: "👆",
+                    description: "Make 100 taps",
+                    target: 100,
+                    achieved: false,
+                    reward: 10
+                },
+                {
+                    id: 3,
+                    name: "Critical Hit!",
+                    icon: "✨",
+                    description: "Get 10 critical hits",
+                    target: 10,
+                    achieved: false,
+                    reward: 20
+                },
+                {
+                    id: 4,
+                    name: "Millionaire",
+                    icon: "💰",
+                    description: "Reach 1,000 points",
+                    target: 1000,
+                    achieved: false,
+                    reward: 50
+                },
+                {
+                    id: 5,
+                    name: "Auto Collector",
+                    icon: "🤖",
+                    description: "Unlock automatic tapping (2/s)",
+                    target: 5000,
+                    achieved: false,
+                    reward: 0,
+                    isUpgrade: true,
+                    upgradeEffect: function() {
+                        game.pointsPerSecond += 2;
+                    }
+                },
+                {
+                    id: 6,
+                    name: "Upgrade Master",
+                    icon: "🏆",
+                    description: "Buy 10 upgrades",
+                    target: 10,
+                    achieved: false,
+                    reward: 100
+                },
+                {
+                    id: 7,
+                    name: "Bronze Champion",
+                    icon: "🥉",
+                    description: "Reach Bronze League",
+                    target: 1000,
+                    achieved: false,
+                    reward: 200
+                },
+                {
+                    id: 8,
+                    name: "Silver Star",
+                    icon: "🥈",
+                    description: "Reach Silver League",
+                    target: 10000,
+                    achieved: false,
+                    reward: 500
+                },
+                {
+                    id: 9,
+                    name: "Golden God",
+                    icon: "🥇",
+                    description: "Reach Gold League",
+                    target: 50000,
+                    achieved: false,
+                    reward: 1000
+                }
+            ],
+            version: 5
+        };
+
+        const elements = {
+            points: document.getElementById('points'),
+            ppt: document.getElementById('ppt'),
+            pps: document.getElementById('pps'),
+            criticalChance: document.getElementById('critical-chance'),
+            clicker: document.getElementById('clicker'),
+            clickerParticles: document.getElementById('clicker-particles'),
+            upgradesGrid: document.getElementById('upgrades-grid'),
+            rewardsGrid: document.getElementById('rewards-grid'),
+            statsBtn: document.getElementById('stats-btn'),
+            statsBtnUpgrades: document.getElementById('stats-btn-upgrades'),
+            statsBtnAchievements: document.getElementById('stats-btn-achievements'),
+            statsModal: document.getElementById('stats-modal'),
+            modalClose: document.getElementById('modal-close'),
+            statTotalPoints: document.getElementById('stat-total-points'),
+            statTotalTaps: document.getElementById('stat-total-taps'),
+            statPpt: document.getElementById('stat-ppt'),
+            statPps: document.getElementById('stat-pps'),
+            statCriticalHits: document.getElementById('stat-critical-hits'),
+            statCriticalChance: document.getElementById('stat-critical-chance'),
+            statPlayTime: document.getElementById('stat-play-time'),
+            statLeague: document.getElementById('stat-league'),
+            saveBtn: document.getElementById('save-btn'),
+            resetBtn: document.getElementById('reset-btn'),
+            achievementsList: document.getElementById('achievements-list'),
+            clickSound: document.getElementById('click-sound'),
+            criticalSound: document.getElementById('critical-sound'),
+            upgradeSound: document.getElementById('upgrade-sound'),
+            achievementSound: document.getElementById('achievement-sound'),
+            leagueSound: document.getElementById('league-sound'),
+            homePage: document.getElementById('home-page'),
+            upgradesPage: document.getElementById('upgrades-page'),
+            achievementsPage: document.getElementById('achievements-page'),
+            navItems: document.querySelectorAll('.nav-item'),
+            leagueContainer: document.getElementById('league-container'),
+            leagueIcon: document.getElementById('league-icon'),
+            leagueName: document.getElementById('league-name'),
+            leagueProgressBar: document.getElementById('league-progress-bar'),
+            leagueProgressText: document.getElementById('league-progress-text')
+        };
+
+        function init() {
+            loadGame();
+            renderUpgrades();
+            renderAchievements();
+            renderDailyRewards();
+            setupEventListeners();
+            startGameLoop();
+            updateLeagueDisplay();
+            
+            setInterval(highlightNewUpgrades, 5000);
+            checkAchievements();
+        }
+
+        function setupEventListeners() {
+            elements.clicker.addEventListener('click', handleClick);
+            elements.clicker.addEventListener('touchstart', handleClick);
+            
+            elements.statsBtn.addEventListener('click', () => toggleModal(true));
+            elements.statsBtnUpgrades.addEventListener('click', () => toggleModal(true));
+            elements.statsBtnAchievements.addEventListener('click', () => toggleModal(true));
+            elements.modalClose.addEventListener('click', () => toggleModal(false));
+            
+            elements.saveBtn.addEventListener('click', saveGame);
+            elements.resetBtn.addEventListener('click', resetGame);
+            
+            elements.navItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const pageId = item.getAttribute('data-page');
+                    switchPage(pageId);
+                    
+                    elements.navItems.forEach(navItem => {
+                        navItem.classList.remove('active');
+                    });
+                    item.classList.add('active');
+                });
+            });
+        }
+
+        function switchPage(pageId) {
+            elements.homePage.classList.remove('active');
+            elements.upgradesPage.classList.remove('active');
+            elements.achievementsPage.classList.remove('active');
+            
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function handleClick(e) {
+            e.preventDefault();
+            
+            let pointsToAdd = game.pointsPerTap;
+            let isCritical = false;
+            
+            if (Math.random() * 100 < game.criticalChance) {
+                pointsToAdd *= game.criticalMultiplier;
+                isCritical = true;
+                game.criticalHits++;
+                createCriticalEffect(e);
+                if (game.soundEnabled) elements.criticalSound.currentTime = 0.1;
+                if (game.soundEnabled) elements.criticalSound.play().catch(e => {});
+            } else if (game.soundEnabled) {
+                elements.clickSound.currentTime = 0.1;
+                elements.clickSound.play().catch(e => {});
+            }
+            
+            game.points += pointsToAdd;
+            game.totalTaps++;
+            game.totalPointsEarned += pointsToAdd;
+            
+            updateDisplay();
+            checkLeague();
+            
+            createClickEffect(e);
+            createFloatingPoints(pointsToAdd, e, isCritical);
+            
+            checkAchievements();
+        }
+
+        function createClickEffect(e) {
+            const rect = elements.clicker.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            const effect = document.createElement('div');
+            effect.className = 'clicker-effect';
+            effect.style.left = `${x}px`;
+            effect.style.top = `${y}px`;
+            
+            elements.clicker.appendChild(effect);
+            
+            setTimeout(() => {
+                effect.style.transition = 'all 0.5s';
+                effect.style.opacity = '0.5';
+                effect.style.transform = 'scale(2)';
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 500);
+            }, 10);
+            
+            createParticles(x, y);
+        }
+
+        function createCriticalEffect(e) {
+            const rect = elements.clicker.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            const effect = document.createElement('div');
+            effect.className = 'clicker-effect critical';
+            effect.style.left = `${x}px`;
+            effect.style.top = `${y}px`;
+            
+            elements.clicker.appendChild(effect);
+            
+            setTimeout(() => {
+                effect.style.transition = 'all 0.5s';
+                effect.style.opacity = '0.5';
+                effect.style.transform = 'scale(3)';
+                
+                setTimeout(() => {
+                    effect.remove();
+                }, 500);
+            }, 10);
+            
+            createParticles(x, y, true);
+            
+            elements.clicker.classList.add('shake');
+            setTimeout(() => {
+                elements.clicker.classList.remove('shake');
+            }, 500);
+        }
+
+        function createParticles(x, y, isCritical = false) {
+            const particleCount = isCritical ? 12 : 8;
+            const colors = isCritical 
+                ? ['#ffd700', '#ffaa00', '#ffcc33'] 
+                : game.league < game.leagues.length 
+                    ? [game.leagues[game.league].particleColor] 
+                    : ['#fd79a8', '#a29bfe', '#74b9ff', '#55efc4'];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = `particle ${isCritical ? 'critical' : ''} ${game.league < game.leagues.length ? game.leagues[game.league].particleColor : ''}`;
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                elements.clickerParticles.appendChild(particle);
+                
+                const angle = Math.random() * Math.PI * 2;
+                const distance = isCritical ? 30 + Math.random() * 40 : 20 + Math.random() * 30;
+                const duration = isCritical ? 0.8 + Math.random() * 0.7 : 0.5 + Math.random() * 0.5;
+                
+                particle.style.transition = `all ${duration}s linear`;
+                particle.style.opacity = '0.8';
+                
+                setTimeout(() => {
+                    particle.style.left = `${x + Math.cos(angle) * distance}px`;
+                    particle.style.top = `${y + Math.sin(angle) * distance}px`;
+                    particle.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        particle.remove();
+                    }, duration * 1000);
+                }, 10);
+            }
+        }
+
+        function createFloatingPoints(points, e, isCritical = false) {
+            const rect = elements.clicker.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+            
+            const floatingText = document.createElement('div');
+            floatingText.className = `floating-points ${isCritical ? 'critical' : ''}`;
+            floatingText.textContent = `+${Math.floor(points)}${isCritical ? '!' : ''}`;
+            floatingText.style.left = `${x}px`;
+            floatingText.style.top = `${y}px`;
+            
+            elements.clicker.appendChild(floatingText);
+            
+            setTimeout(() => {
+                floatingText.remove();
+            }, 1000);
+        }
+
+        function renderUpgrades() {
+            elements.upgradesGrid.innerHTML = '';
+            
+            game.upgrades.forEach(upgrade => {
+                const upgradeEl = document.createElement('div');
+                upgradeEl.className = 'upgrade';
+                upgradeEl.dataset.id = upgrade.id;
+                
+                const canUpgrade = game.points >= upgrade.cost && upgrade.level < upgrade.maxLevel;
+                const isMaxLevel = upgrade.level >= upgrade.maxLevel;
+                
+                upgradeEl.innerHTML = `
+                    <div class="upgrade-name">
+                        <span class="upgrade-icon">${upgrade.icon}</span>
+                        ${upgrade.name}
+                    </div>
+                    <div class="upgrade-description">${upgrade.description}</div>
+                    <div class="upgrade-stats">
+                        <span class="upgrade-cost">🪙 ${formatNumber(upgrade.cost)}</span>
+                        <span class="upgrade-level">Lvl ${upgrade.level}/${upgrade.maxLevel}</span>
+                    </div>
+                    <button class="buy-btn" ${!canUpgrade ? 'disabled' : ''}>
+                        ${isMaxLevel ? 'MAX' : upgrade.level === 0 ? 'Buy' : 'Upgrade'}
+                    </button>
+                    ${isMaxLevel ? '<div class="max-level-badge">Max Level</div>' : ''}
+                `;
+                
+                elements.upgradesGrid.appendChild(upgradeEl);
+                
+                if (!isMaxLevel) {
+                    upgradeEl.querySelector('.buy-btn').addEventListener('click', () => buyUpgrade(upgrade.id));
+                }
+            });
+        }
+
+        function buyUpgrade(id) {
+            const upgrade = game.upgrades.find(u => u.id === id);
+            
+            if (!upgrade || game.points < upgrade.cost || upgrade.level >= upgrade.maxLevel) return;
+            
+            game.points -= upgrade.cost;
+            upgrade.level++;
+            
+            if (upgrade.type === 'click') {
+                game.pointsPerTap += upgrade.multiplier;
+            } else if (upgrade.type === 'auto') {
+                game.pointsPerSecond += upgrade.multiplier;
+            } else if (upgrade.type === 'critical') {
+                if (upgrade.id === 7) {
+                    game.criticalChance += upgrade.multiplier;
+                } else if (upgrade.id === 8) {
+                    game.criticalMultiplier += upgrade.multiplier;
+                }
+            }
+            
+            upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.3, upgrade.level));
+            
+            updateDisplay();
+            renderUpgrades();
+            
+            if (game.soundEnabled) elements.upgradeSound.currentTime = 0.1;
+            if (game.soundEnabled) elements.upgradeSound.play().catch(e => {});
+            
+            const upgradeEl = document.querySelector(`.upgrade[data-id="${id}"]`);
+            upgradeEl.classList.add('new-upgrade');
+            setTimeout(() => {
+                upgradeEl.classList.remove('new-upgrade');
+            }, 1500);
+            
+            checkAchievements();
+        }
+
+        function highlightNewUpgrades() {
+            game.upgrades.forEach(upgrade => {
+                if (game.points >= upgrade.cost && upgrade.level < upgrade.maxLevel) {
+                    const upgradeEl = document.querySelector(`.upgrade[data-id="${upgrade.id}"]`);
+                    if (upgradeEl) {
+                        upgradeEl.classList.add('new-upgrade');
+                        setTimeout(() => {
+                            upgradeEl.classList.remove('new-upgrade');
+                        }, 2000);
+                    }
+                }
+            });
+        }
+
+        function renderDailyRewards() {
+            const rewardsGrid = document.getElementById('rewards-grid');
+            if (!rewardsGrid) return;
+
+            rewardsGrid.innerHTML = '';
+
+            game.dailyRewards.forEach((reward, index) => {
+                const rewardEl = document.createElement('div');
+                rewardEl.className = 'reward';
+                rewardEl.dataset.day = index;
+
+                const isClaimed = index < game.currentRewardDay;
+                const isAvailable = index === game.currentRewardDay && canClaimReward();
+
+                if (isClaimed) rewardEl.classList.add('claimed');
+                if (isAvailable) rewardEl.classList.add('available');
+
+                rewardEl.innerHTML = `
+                    <div class="reward-day">Day ${index + 1}</div>
+                    <div class="reward-amount">🪙 ${formatNumber(reward)}</div>
+                    <div class="reward-checkmark">✓</div>
+                    <div class="reward-next"></div>
+                `;
+
+                if (isAvailable) {
+                    rewardEl.addEventListener('click', function() {
+                        if (!canClaimReward()) return;
+                        
+                        const effect = document.createElement('div');
+                        effect.className = 'reward-claim-effect';
+                        rewardEl.appendChild(effect);
+                        
+                        setTimeout(() => {
+                            effect.style.opacity = '1';
+                            effect.style.transition = 'opacity 0.5s';
+                            
+                            setTimeout(() => {
+                                effect.remove();
+                            }, 500);
+                        }, 10);
+                        
+                        rewardEl.style.animation = 'reward-claim 0.3s';
+                        setTimeout(() => {
+                            rewardEl.style.animation = '';
+                        }, 300);
+                        
+                        claimDailyReward();
+                    });
+                }
+
+                rewardsGrid.appendChild(rewardEl);
+            });
+        }
+
+        function canClaimReward() {
+            if (!game.lastRewardClaimDate) return true;
+            const lastClaim = new Date(game.lastRewardClaimDate);
+            const now = new Date();
+            return now.getDate() !== lastClaim.getDate() || now.getMonth() !== lastClaim.getMonth() || now.getFullYear() !== lastClaim.getFullYear();
+        }
+
+        function claimDailyReward() {
+            if (!canClaimReward()) return;
+
+            const reward = game.dailyRewards[game.currentRewardDay];
+            game.points += reward;
+            game.totalPointsEarned += reward;
+            game.lastRewardClaimDate = new Date().toISOString();
+
+            game.currentRewardDay = (game.currentRewardDay + 1) % game.dailyRewards.length;
+
+            updateDisplay();
+            renderDailyRewards();
+            checkLeague();
+
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-points critical';
+            floatingText.textContent = `+${formatNumber(reward)} Daily Reward!`;
+            floatingText.style.left = '50%';
+            floatingText.style.top = '40%';
+            floatingText.style.transform = 'translate(-50%, -50%)';
+            floatingText.style.fontSize = '16px';
+            document.body.appendChild(floatingText);
+
+            setTimeout(() => {
+                floatingText.remove();
+            }, 2000);
+
+            if (game.soundEnabled) {
+                elements.upgradeSound.currentTime = 0.1;
+                elements.upgradeSound.play().catch(e => {});
+            }
+
+            saveGame();
+        }
+
+        function renderAchievements() {
+            elements.achievementsList.innerHTML = '';
+            
+            game.achievements.forEach(achievement => {
+                const achievementEl = document.createElement('div');
+                achievementEl.className = `achievement ${achievement.achieved ? '' : 'locked'} ${achievement.isUpgrade ? 'upgrade-achievement' : ''}`;
+                achievementEl.dataset.id = achievement.id;
+                
+                const progress = getAchievementProgress(achievement);
+                const progressPercent = Math.min(100, (progress / achievement.target) * 100);
+                
+                if (achievement.isUpgrade && !achievement.achieved) {
+                    achievementEl.innerHTML = `
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${achievement.name}</div>
+                            <div class="achievement-desc">${achievement.description}</div>
+                            <div class="achievement-cost">Cost: ${formatNumber(achievement.target)}</div>
+                        </div>
+                    `;
+                    
+                    achievementEl.addEventListener('click', () => {
+                        if (game.points >= achievement.target) {
+                            game.points -= achievement.target;
+                            achievement.achieved = true;
+                            if (achievement.upgradeEffect) achievement.upgradeEffect();
+                            renderAchievements();
+                            updateDisplay();
+                            
+                            if (game.soundEnabled) elements.upgradeSound.currentTime = 0.1;
+                            if (game.soundEnabled) elements.upgradeSound.play().catch(e => {});
+                        }
+                    });
+                } else {
+                    achievementEl.innerHTML = `
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-info">
+                            <div class="achievement-name">${achievement.name}</div>
+                            <div class="achievement-desc">${achievement.description}</div>
+                            ${achievement.achieved ? '' : `
+                                <div class="achievement-progress">
+                                    <div class="achievement-progress-bar" style="width: ${progressPercent}%"></div>
+                                </div>
+                                <div class="achievement-cost">${formatNumber(progress)}/${formatNumber(achievement.target)}</div>
+                            `}
+                        </div>
+                    `;
+                }
+                
+                elements.achievementsList.appendChild(achievementEl);
+            });
+        }
+
+        function getAchievementProgress(achievement) {
+            switch (achievement.id) {
+                case 1:
+                case 4:
+                case 7:
+                case 8:
+                case 9:
+                    return game.totalPointsEarned;
+                case 2:
+                    return game.totalTaps;
+                case 3:
+                    return game.criticalHits;
+                case 5:
+                    return game.points;
+                case 6:
+                    return game.upgrades.reduce((sum, u) => sum + u.level, 0);
+                default:
+                    return 0;
+            }
+        }
+
+        function checkAchievements() {
+            let newAchievements = false;
+            
+            game.achievements.forEach(achievement => {
+                if (!achievement.achieved) {
+                    const progress = getAchievementProgress(achievement);
+                    
+                    if (progress >= achievement.target) {
+                        achievement.achieved = true;
+                        
+                        if (achievement.reward > 0) {
+                            game.points += achievement.reward;
+                        }
+                        
+                        if (achievement.isUpgrade && achievement.upgradeEffect) {
+                            achievement.upgradeEffect();
+                        }
+                        
+                        newAchievements = true;
+                        
+                        if (game.soundEnabled) elements.achievementSound.currentTime = 0.1;
+                        if (game.soundEnabled) elements.achievementSound.play().catch(e => {});
+                        
+                        const floatingText = document.createElement('div');
+                        floatingText.className = 'floating-points critical';
+                        floatingText.textContent = achievement.isUpgrade 
+                            ? `Unlocked: ${achievement.name}!` 
+                            : `Achievement! +${achievement.reward}`;
+                        floatingText.style.left = '50%';
+                        floatingText.style.top = '50%';
+                        floatingText.style.transform = 'translate(-50%, -50%)';
+                        floatingText.style.fontSize = '16px';
+                        floatingText.style.animation = 'float-up 2s forwards';
+                        
+                        document.body.appendChild(floatingText);
+                        
+                        setTimeout(() => {
+                            floatingText.remove();
+                        }, 2000);
+                    }
+                }
+            });
+            
+            if (newAchievements) {
+                renderAchievements();
+                updateDisplay();
+            }
+        }
+
+        function checkLeague() {
+            const currentLeague = game.league;
+            const nextLeague = game.league + 1;
+            
+            if (nextLeague < game.leagues.length && game.totalPointsEarned >= game.leagues[nextLeague].threshold) {
+                game.league = nextLeague;
+                updateLeagueDisplay();
+                showLeaguePromotion();
+                
+                elements.clicker.className = 'clicker';
+                elements.clicker.classList.add(game.leagues[game.league].clickerEffect);
+                
+                if (game.soundEnabled) elements.leagueSound.currentTime = 0.1;
+                if (game.soundEnabled) elements.leagueSound.play().catch(e => {});
+            }
+        }
+
+        function updateLeagueDisplay() {
+            if (game.league >= game.leagues.length) return;
+            
+            const currentLeague = game.leagues[game.league];
+            const nextLeague = game.league < game.leagues.length - 1 ? game.leagues[game.league + 1] : null;
+            
+            elements.leagueIcon.className = `league-icon ${currentLeague.particleColor}`;
+            elements.leagueIcon.textContent = currentLeague.icon;
+            elements.leagueName.textContent = currentLeague.name;
+            
+            if (nextLeague) {
+                const progress = Math.min(1, game.totalPointsEarned / nextLeague.threshold);
+                elements.leagueProgressBar.style.width = `${progress * 100}%`;
+                elements.leagueProgressText.textContent = `${formatNumber(game.totalPointsEarned)}/${formatNumber(nextLeague.threshold)} to ${nextLeague.name}`;
+            } else {
+                elements.leagueProgressBar.style.width = '100%';
+                elements.leagueProgressText.textContent = 'Max League Reached!';
+            }
+            
+            elements.statLeague.textContent = currentLeague.name;
+        }
+
+        function showLeaguePromotion() {
+            const currentLeague = game.leagues[game.league];
+            
+            elements.leagueIcon.classList.add('league-promotion');
+            setTimeout(() => {
+                elements.leagueIcon.classList.remove('league-promotion');
+            }, 1500);
+            
+            const floatingText = document.createElement('div');
+            floatingText.className = 'floating-points critical';
+            floatingText.textContent = `Promoted to ${currentLeague.name}!`;
+            floatingText.style.left = '50%';
+            floatingText.style.top = '20%';
+            floatingText.style.transform = 'translate(-50%, -50%)';
+            floatingText.style.fontSize = '18px';
+            floatingText.style.animation = 'float-up 2s forwards';
+            
+            document.body.appendChild(floatingText);
+            
+            setTimeout(() => {
+                floatingText.remove();
+            }, 2000);
+        }
+
+        function updateDisplay() {
+            elements.points.textContent = formatNumber(Math.floor(game.points));
+            elements.ppt.textContent = formatNumber(game.pointsPerTap);
+            elements.pps.textContent = formatNumber(game.pointsPerSecond);
+            elements.criticalChance.textContent = game.criticalChance;
+            
+            elements.statTotalPoints.textContent = formatNumber(Math.floor(game.totalPointsEarned));
+            elements.statTotalTaps.textContent = formatNumber(game.totalTaps);
+            elements.statPpt.textContent = formatNumber(game.pointsPerTap);
+            elements.statPps.textContent = formatNumber(game.pointsPerSecond);
+            elements.statCriticalHits.textContent = formatNumber(game.criticalHits);
+            elements.statCriticalChance.textContent = `${game.criticalChance}%`;
+            elements.statPlayTime.textContent = formatTime(game.playTime);
+            
+            game.upgrades.forEach(upgrade => {
+                const btn = document.querySelector(`.upgrade[data-id="${upgrade.id}"] .buy-btn`);
+                if (btn) {
+                    btn.disabled = game.points < upgrade.cost || upgrade.level >= upgrade.maxLevel;
+                }
+            });
+        }
+
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        function formatTime(seconds) {
+            const hrs = Math.floor(seconds / 3600);
+            const mins = Math.floor((seconds % 3600) / 60);
+            const secs = Math.floor(seconds % 60);
+            
+            return [
+                hrs.toString().padStart(2, '0'),
+                mins.toString().padStart(2, '0'),
+                secs.toString().padStart(2, '0')
+            ].join(':');
+        }
+
+        function toggleModal(show) {
+            elements.statsModal.classList.toggle('active', show);
+        }
+
+        function startGameLoop() {
+            const now = Date.now();
+            const deltaTime = (now - game.lastUpdate) / 1000;
+            game.lastUpdate = now;
+            
+            if (game.pointsPerSecond > 0) {
+                const pointsToAdd = game.pointsPerSecond * deltaTime;
+                game.points += pointsToAdd;
+                game.totalPointsEarned += pointsToAdd;
+                updateDisplay();
+                checkLeague();
+            }
+            
+            game.playTime += deltaTime;
+            
+            requestAnimationFrame(startGameLoop);
+        }
+
+        function saveGame() {
+            localStorage.setItem('cosmicTapperSave', JSON.stringify(game));
+            
+            const saveBtn = elements.saveBtn;
+            saveBtn.textContent = 'Saved!';
+            setTimeout(() => {
+                saveBtn.textContent = 'Save Game';
+            }, 2000);
+        }
+
+        function loadGame() {
+            const save = localStorage.getItem('cosmicTapperSave');
+            if (save) {
+                try {
+                    const parsed = JSON.parse(save);
+                    
+                    if (parsed.version === game.version) {
+                        Object.assign(game, parsed);
+                        
+                        if (game.dailyRewards === undefined) game.dailyRewards = [1000, 5000, 8000, 12000, 20000, 35000, 50000];
+                        if (game.lastRewardClaimDate === undefined) game.lastRewardClaimDate = null;
+                        if (game.currentRewardDay === undefined) game.currentRewardDay = 0;
+                        
+                        if (game.criticalChance === undefined) game.criticalChance = 10;
+                        if (game.criticalMultiplier === undefined) game.criticalMultiplier = 3;
+                        if (game.criticalHits === undefined) game.criticalHits = 0;
+                        if (game.soundEnabled === undefined) game.soundEnabled = true;
+                        
+                        if (game.league === undefined) game.league = 0;
+                        if (game.leagues === undefined) {
+                            game.leagues = [
+                                { name: "Bronze League", icon: "🥉", threshold: 1000, particleColor: "bronze", clickerEffect: "bronze-effect" },
+                                { name: "Silver League", icon: "🥈", threshold: 10000, particleColor: "silver", clickerEffect: "silver-effect" },
+                                { name: "Gold League", icon: "🥇", threshold: 50000, particleColor: "gold", clickerEffect: "gold-effect" }
+                            ];
+                        }
+                        
+                        if (game.achievements.length < 9) {
+                            game.achievements.push(
+                                {
+                                    id: 7,
+                                    name: "Bronze Champion",
+                                    icon: "🥉",
+                                    description: "Reach Bronze League",
+                                    target: 1000,
+                                    achieved: game.totalPointsEarned >= 1000,
+                                    reward: 200
+                                },
+                                {
+                                    id: 8,
+                                    name: "Silver Star",
+                                    icon: "🥈",
+                                    description: "Reach Silver League",
+                                    target: 10000,
+                                    achieved: game.totalPointsEarned >= 10000,
+                                    reward: 500
+                                },
+                                {
+                                    id: 9,
+                                    name: "Golden God",
+                                    icon: "🥇",
+                                    description: "Reach Gold League",
+                                    target: 50000,
+                                    achieved: game.totalPointsEarned >= 50000,
+                                    reward: 1000
+                                }
+                            );
+                        }
+                        
+                        game.upgrades.forEach(upgrade => {
+                            upgrade.cost = Math.floor(upgrade.baseCost * Math.pow(1.3, upgrade.level));
+                        });
+                        
+                        updateDisplay();
+                        updateLeagueDisplay();
+                        renderAchievements();
+                        
+                        if (game.league < game.leagues.length) {
+                            elements.clicker.className = 'clicker';
+                            elements.clicker.classList.add(game.leagues[game.league].clickerEffect);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to load save:', e);
+                }
+            }
+        }
+
+        function resetGame() {
+            if (confirm('Are you sure you want to reset your game? All progress will be lost.')) {
+                game.points = 0;
+                game.pointsPerTap = 1;
+                game.pointsPerSecond = 0;
+                game.criticalChance = 10;
+                game.criticalMultiplier = 3;
+                game.totalTaps = 0;
+                game.totalPointsEarned = 0;
+                game.criticalHits = 0;
+                game.playTime = 0;
+                game.soundEnabled = true;
+                game.lastRewardClaimDate = null;
+                game.currentRewardDay = 0;
+                game.league = 0;
+                
+                game.upgrades.forEach(upgrade => {
+                    upgrade.level = 0;
+                    upgrade.cost = upgrade.baseCost;
+                });
+                
+                game.achievements.forEach(achievement => {
+                    achievement.achieved = false;
+                });
+                
+                updateDisplay();
+                updateLeagueDisplay();
+                renderUpgrades();
+                renderAchievements();
+                renderDailyRewards();
+                
+                elements.clicker.className = 'clicker';
+                
+                localStorage.removeItem('cosmicTapperSave');
+                
+                toggleModal(false);
+            }
+        }
+
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
